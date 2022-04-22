@@ -1,4 +1,6 @@
-from utils.utils import get_soup, get_status
+import re
+
+from utils.utils import get_soup, get_status, get_feed
 
 
 class rpiLoc:
@@ -81,6 +83,100 @@ class rpiLoc:
                 raise Exception("API response: {}".format(status))
             return data
 
+    @staticmethod
+    def get_rss_entires(region: str):
+        all_entries = get_feed("https://rpilocator.com/feed/")
+
+        results = []
+        for entries in all_entries:
+            for entry in entries:
+                url = entry.link
+                title = entry.title
+                country = entry.tags[1].term
+
+                title = re.sub(r"<.*?>", "", title)
+                # remove new lines from post content
+                title = re.sub(r"\n", " ", title)
+                # remove extra spaces from post content
+                title = re.sub(r"\s{2,}", " ", title)
+
+                # remove case sensitive
+                if region.lower() in country.lower():
+                    model = title.split(f"): ")[1]
+                    model = model.split(" is")[0]
+
+                    vendor = title.split(f"at ")[1]
+                    vendor = vendor.split(" ")[0]
+
+                    amount = title.split(" units")[0]
+                    amount = amount.split(" ")[15]
+                    if amount <= "1":
+                        amount = amount + " unit"
+                    elif amount > "1":
+                        amount = amount + " units"
+
+                    # IF RPI4  is in title
+                    if "RPi 4" in title:
+                        results.append(
+                            {
+                                "title": title,
+                                "model": model,
+                                "vendor": vendor,
+                                "amount": amount,
+                                "url": url,
+                                "country": country.upper(),
+                            }
+                        )
+        return results
+
+    @staticmethod
+    def get_rss_model_entires(region: str, gbs: int):
+        all_entries = get_feed("https://rpilocator.com/feed/")
+
+        results = []
+        for entries in all_entries:
+            for entry in entries:
+                url = entry.link
+                title = entry.title
+                country = entry.tags[1].term
+
+                title = re.sub(r"<.*?>", "", title)
+                # remove new lines from post content
+                title = re.sub(r"\n", " ", title)
+                # remove extra spaces from post content
+                title = re.sub(r"\s{2,}", " ", title)
+
+                # search for RPI 4 in title
+                if f"{gbs}GB" in title:
+                    # remove case sensitive
+                    if region.lower() in country.lower():
+                        model = title.split(f"): ")[1]
+                        model = model.split(" is")[0]
+
+                        vendor = title.split(f"at ")[1]
+                        vendor = vendor.split(" ")[0]
+
+                        amount = title.split(" units")[0]
+                        amount = amount.split(" ")[15]
+                        if amount <= "1":
+                            amount = amount + " unit"
+                        elif amount > "1":
+                            amount = amount + " units"
+
+                        # IF RPI4  is in title
+                        if "RPi 4" in title:
+                            results.append(
+                                {
+                                    "title": title,
+                                    "model": model,
+                                    "vendor": vendor,
+                                    "amount": amount,
+                                    "url": url,
+                                    "country": country.upper(),
+                                }
+                            )
+        return results
+
 
 if __name__ == '__main__':
-    print(rpiLoc.rpi_model("US", 4))
+    print(rpiLoc.get_rss_entires("US"))
