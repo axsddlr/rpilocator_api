@@ -32,7 +32,7 @@ TWO_MINUTES = 150
 
 
 @limits(calls=250, period=TWO_MINUTES)
-@app.get("/pi4/{country}", tags=["News"])
+@app.get("/pi4/{country}", tags=["pi4"])
 def all_pi4_in_a_country(country):
     """get all pi4 in a country"""
     return rpiloc.rpi_all(country)
@@ -46,7 +46,7 @@ def all_pi4_in_a_region(region):
 
 
 @limits(calls=250, period=TWO_MINUTES)
-@app.get("/pi4/{country}/{gbs}", tags=["News"])
+@app.get("/pi4/{country}/{gbs}", tags=["pi4"])
 def all_pi4_in_country_with_model_via_GiB(country, gbs):
     """get all pi4 in a country with a plus model"""
     return rpiloc.rpi_model(country, gbs)
