@@ -2,6 +2,7 @@ import re
 
 from utils.utils import get_soup, get_status, get_feed
 
+FEED_URL = "https://rpilocator.com/feed/"
 
 class rpiLoc:
     @staticmethod
@@ -85,7 +86,8 @@ class rpiLoc:
 
     @staticmethod
     def get_rss_entires(region: str):
-        all_entries = get_feed("https://rpilocator.com/feed/")
+        all_entries = get_feed(FEED_URL)
+        status = get_status(FEED_URL)
 
         results = []
         for entries in all_entries:
@@ -127,11 +129,16 @@ class rpiLoc:
                                 "country": country.upper(),
                             }
                         )
-        return results
+        data = {"status": status, "data": results}
+
+        if status != 200:
+            raise Exception("API response: {}".format(status))
+        return data
 
     @staticmethod
     def get_rss_model_entires(region: str, gbs: int):
-        all_entries = get_feed("https://rpilocator.com/feed/")
+        all_entries = get_feed(FEED_URL)
+        status = get_status(FEED_URL)
 
         results = []
         for entries in all_entries:
@@ -175,7 +182,11 @@ class rpiLoc:
                                     "country": country.upper(),
                                 }
                             )
-        return results
+        data = {"status": status, "data": results}
+
+        if status != 200:
+            raise Exception("API response: {}".format(status))
+        return data
 
 
 if __name__ == '__main__':
