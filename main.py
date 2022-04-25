@@ -39,7 +39,7 @@ rpiloc = rpiLoc()
 
 
 @app.get("/pi4/{country}", tags=["pi4"])
-@limiter.limit("100/minute")
+@limiter.limit("1/minute")
 def all_pi4_in_a_country(request: Request, country):
     """get all pi4 in a country"""
     return rpiloc.rpi_all(country)
@@ -60,7 +60,7 @@ def all_pi4_in_a_region_tweets(request: Request, region):
 
 
 @app.get("/pi4/{country}/{gbs}", tags=["pi4"])
-@limiter.limit("100/minute")
+@limiter.limit("1/minute")
 def all_pi4_in_country_with_model_via_GiB(request: Request, country, gbs):
     """get all pi4 in a country with a plus model"""
     return rpiloc.rpi_model(country, gbs)
