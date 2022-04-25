@@ -15,7 +15,7 @@ app = FastAPI(
     description="An Unofficial REST API for [RpiLocator](https://rpilocator.com/), Made by [Andre "
                 "Saddler]( "
                 "https://github.com/axsddlr)",
-    version="1.0.2",
+    version="1.0.3",
     docs_url="/",
     redoc_url=None,
 )
@@ -37,9 +37,6 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # init classes
 rpiloc = rpiLoc()
 
-TWO_MINUTES = 150
-ONE_MINUTE = 60
-
 
 @app.get("/pi4/{country}", tags=["pi4"])
 @limiter.limit("100/minute")
@@ -48,11 +45,18 @@ def all_pi4_in_a_country(request: Request, country):
     return rpiloc.rpi_all(country)
 
 
-@app.get("/v2/pi4/{region}", tags=["pi4"])
+@app.get("/v2/pi4/{region}", tags=["rss"])
 @limiter.limit("1/minute")
 def all_pi4_in_a_region(request: Request, region):
     """get all pi4 in a country"""
     return rpiloc.get_rss_entires(region)
+
+
+@app.get("/v3/pi4/{region}", tags=["twitter"])
+@limiter.limit("55/minute")
+def all_pi4_in_a_region_tweets(request: Request, region):
+    """get all pi4 in a country via twitter alerts"""
+    return rpiloc.get_rpil_tweets(region)
 
 
 @app.get("/pi4/{country}/{gbs}", tags=["pi4"])
@@ -62,7 +66,7 @@ def all_pi4_in_country_with_model_via_GiB(request: Request, country, gbs):
     return rpiloc.rpi_model(country, gbs)
 
 
-@app.get("/v2/pi4/{region}/{gbs}", tags=["pi4"])
+@app.get("/v2/pi4/{region}/{gbs}", tags=["rss"])
 @limiter.limit("1/minute")
 def all_pi4_in_region_with_model_via_GiB(request: Request, region, gbs):
     """get all pi4 in a region with a plus model"""

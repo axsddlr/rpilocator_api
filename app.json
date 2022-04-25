@@ -1,7 +1,38 @@
 {
-    "name": "Start on Heroku: Python",
-    "description": "A barebones Python app, which can easily be deployed to Heroku.",
-    "image": "heroku/python",
-    "repository": "https://github.com/heroku/python-getting-started",
-    "addons": []
+  "name": "Start on Heroku: Python",
+  "description": "A barebones Python app, which can easily be deployed to Heroku.",
+  "keywords": [
+      "heroku",
+      "app.json",
+      "app",
+      "json",
+      "maker",
+      "generator"
+  ],
+  "env": {
+    "cons_key": {
+      "description": "A secret key for verifying the integrity of signed cookies."
+    },
+    "cons_secret": {
+      "description": "The number of processes to run."
+    },
+    "acc_token": {
+      "description": "The number of processes to run."
+    },
+    "acc_secret": {
+      "description": "The number of processes to run."
+    }
+  },
+  "stack": "heroku-20",
+  "buildpacks": [
+      {
+          "url": "heroku/python"
+      }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  }
 }

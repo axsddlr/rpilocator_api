@@ -1,8 +1,13 @@
 import re
 
-from utils.utils import get_soup, get_status, get_feed
+from dotenv import load_dotenv
+
+from utils.utils import get_soup, get_status, get_feed, get_twitter_client
+
+load_dotenv()
 
 FEED_URL = "https://rpilocator.com/feed/"
+
 
 class rpiLoc:
     @staticmethod
@@ -187,6 +192,25 @@ class rpiLoc:
         if status != 200:
             raise Exception("API response: {}".format(status))
         return data
+
+    @staticmethod
+    def get_rpil_tweets(region: str):
+        all_tweets = []
+        new_tweets = []
+        client = get_twitter_client()
+        new_tweets = client.user_timeline(screen_name="rpilocator", count=5)
+        while len(new_tweets) > 0:
+            for tweet in new_tweets:
+                # check for stock alert wording in tweet then also check for RPi 4 in tweet
+                if f"Stock Alert ({region})" and "RPi 4 Model B" in tweet.text:
+                    parsed_tweet = {'date': tweet.created_at,
+                                    'twitter_name': tweet.user.screen_name,
+                                    'text': tweet.text}
+                    all_tweets.append(parsed_tweet)
+            max_id = new_tweets[-1].id - 1
+            new_tweets = client.user_timeline(screen_name="rpilocator",
+                                              count=5, max_id=max_id)
+        return all_tweets
 
 
 if __name__ == '__main__':
