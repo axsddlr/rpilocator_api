@@ -1,4 +1,6 @@
 # rpilocator api
+### (for Raspberry Pi 4 Model B only)
+
 
 An Unofficial REST API for [rpilocator.com](https://rpilocator.com/)
 

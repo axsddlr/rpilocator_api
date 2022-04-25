@@ -11,7 +11,7 @@ from api.scrape import rpiLoc
 limiter = Limiter(key_func=get_remote_address)
 
 app = FastAPI(
-    title="Unofficial rpilocator API",
+    title="Unofficial rpilocator API for Raspberry Pi 4 Model B only",
     description="An Unofficial REST API for [RpiLocator](https://rpilocator.com/), Made by [Andre "
                 "Saddler]( "
                 "https://github.com/axsddlr)",
